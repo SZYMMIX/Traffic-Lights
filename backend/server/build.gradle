@@ -1,0 +1,13 @@
+plugins {
+    id 'org.springframework.boot'
+    id 'io.spring.dependency-management'
+}
+
+dependencies {
+    implementation project(':logic')
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+}
+
+bootJar {
+    mainClass = 'io.github.szymmix.traffic_lights.server.TrafficServerApp'
+}

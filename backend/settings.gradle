@@ -1,0 +1,5 @@
+rootProject.name = 'traffic-lights-backend'
+
+include 'logic'
+include 'cli'
+include 'server'

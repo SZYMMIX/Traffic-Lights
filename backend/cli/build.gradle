@@ -1,0 +1,15 @@
+plugins {
+    id 'application'
+}
+
+dependencies {
+    implementation project(':logic')
+    implementation platform('com.fasterxml.jackson:jackson-bom:2.21.2')
+
+    implementation 'com.fasterxml.jackson.core:jackson-databind'
+    implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+}
+
+application {
+    mainClass = 'io.github.szymmix.traffic_lights.cli.Main'
+}
