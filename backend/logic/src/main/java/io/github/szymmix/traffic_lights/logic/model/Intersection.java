@@ -1,36 +1,28 @@
 package io.github.szymmix.traffic_lights.logic.model;
 
 import java.util.*;
+import java.util.stream.Stream;
 
 public class Intersection {
-    private final Map<RoadDirection, Map<WayType, Deque<Car>>> lanes = new EnumMap<>(RoadDirection.class);
-
-    private final Map<RoadDirection, Map<WayType, LightState>> lights = new EnumMap<>(RoadDirection.class);
+    private final Map<RoadDirection, Map<WayType, Lane>> lanes = new EnumMap<>(RoadDirection.class);
 
     public Intersection() {
-        for (RoadDirection dir : RoadDirection.values()) {
-            Map<WayType, Deque<Car>> roadLanes = new EnumMap<>(WayType.class);
-            Map<WayType, LightState> roadLights = new EnumMap<>(WayType.class);
+        for (RoadDirection direction : RoadDirection.values()) {
+            Map<WayType, Lane> roadLanes = new EnumMap<>(WayType.class);
 
             for (WayType type : WayType.values()) {
-                roadLanes.put(type, new ArrayDeque<>());
-                roadLights.put(type, LightState.RED);
+                roadLanes.put(type, new Lane(direction, type));
             }
-
-            lanes.put(dir, roadLanes);
-            lights.put(dir, roadLights);
+            lanes.put(direction, roadLanes);
         }
     }
 
-    public Deque<Car> getQueue(RoadDirection dir, WayType type) {
-        return lanes.get(dir).get(type);
+    public Lane getLane(RoadDirection direction, WayType type) {
+        return lanes.get(direction).get(type);
     }
 
-    public LightState getLight(RoadDirection dir, WayType type) {
-        return lights.get(dir).get(type);
-    }
-
-    public void setLight(RoadDirection dir, WayType type, LightState state) {
-        lights.get(dir).put(type, state);
+    public Stream<Lane> allLanes() {
+        return lanes.values().stream()
+                .flatMap(m -> m.values().stream());
     }
 }
