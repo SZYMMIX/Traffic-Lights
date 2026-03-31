@@ -1,8 +1,11 @@
 package io.github.szymmix.traffic_lights.logic;
 
+import io.github.szymmix.traffic_lights.logic.model.Intersection;
+import io.github.szymmix.traffic_lights.logic.model.Lane;
 import io.github.szymmix.traffic_lights.logic.model.RoadDirection;
 import io.github.szymmix.traffic_lights.logic.model.Way;
 
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -53,5 +56,24 @@ public class CollisionManager {
     private void addConflict(Way way1, Way way2) {
         conflicts.add(new ConflictPair(way1, way2));
         conflicts.add(new ConflictPair(way2, way1));
+    }
+
+    public Set<Lane> calculateOptimalGreenLanes(Intersection intersection, Set<Lane> currentTargetLanes) {
+        Set<Lane> selectedLanes = new HashSet<>();
+        intersection.allLanes()
+                .filter(l -> !l.isEmpty())
+                .sorted(Comparator.comparingInt(Lane::length).reversed())
+                .forEach(lane -> {
+                    boolean hasConflict = selectedLanes.stream()
+                            .anyMatch(selected -> areConflicting(
+                                    lane.getWay(),
+                                    selected.getWay())
+                            );
+                    if (!hasConflict) {
+                        selectedLanes.add(lane);
+                    }
+                });
+
+        return selectedLanes.isEmpty() ? currentTargetLanes : selectedLanes;
     }
 }
