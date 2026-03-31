@@ -2,7 +2,11 @@ package io.github.szymmix.traffic_lights.logic.model;
 
 public enum LightState {
     GREEN,
-    RED_YELLOW,
     YELLOW,
-    RED
+    RED,
+    RED_YELLOW;
+
+    public LightState next() {
+        return values()[(ordinal() + 1) % 4];
+    }
 }
