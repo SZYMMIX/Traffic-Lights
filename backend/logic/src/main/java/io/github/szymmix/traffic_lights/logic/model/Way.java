@@ -1,6 +1,6 @@
 package io.github.szymmix.traffic_lights.logic.model;
 
-public record Way (RoadDirection startRoad, RoadDirection endRoad, WayType type) {
+public record Way(RoadDirection startRoad, RoadDirection endRoad, WayType type) {
 
     public Way(RoadDirection startRoad, RoadDirection endRoad) {
         this(startRoad, endRoad, calculateType(startRoad, endRoad));

@@ -32,7 +32,7 @@ public final class Intersection {
     }
 
     public boolean changePhase(CollisionManager collisionManager) {
-        Set<Lane> newLanes = collisionManager.calculateOptimalGreenLanes(this, activeLanes);
+        Set<Lane> newLanes = collisionManager.calculateOptimalGreenLights(this, activeLanes);
 
         if (!newLanes.equals(activeLanes)) {
             SetUtils.symmetricDifference(newLanes, activeLanes)
@@ -45,5 +45,19 @@ public final class Intersection {
 
     public Set<Lane> getActiveLanes() {
         return activeLanes;
+    }
+
+    public IntersectionSnapshot getSnapshot() {
+        Map<RoadDirection, Map<WayType, LaneSnapshot>> snapshotLanes = new EnumMap<>(RoadDirection.class);
+
+        for (RoadDirection direction : RoadDirection.values()) {
+            Map<WayType, LaneSnapshot> roadLanes = new EnumMap<>(WayType.class);
+            for (WayType type : WayType.values()) {
+                Lane lane = getLane(direction, type);
+                roadLanes.put(type, new LaneSnapshot(lane.getLight(), lane.length()));
+            }
+            snapshotLanes.put(direction, roadLanes);
+        }
+        return new IntersectionSnapshot(snapshotLanes);
     }
 }
