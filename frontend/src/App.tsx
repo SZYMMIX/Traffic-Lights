@@ -92,9 +92,10 @@ const App: React.FC = () => {
 
 const RoadSection = ({ dir, data, onAdd }: any) => (
     <div style={{ display: 'flex', gap: '2px', background: '#1a1a1a', padding: '6px', borderRadius: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
-        <Lane type="LEFT_TURN" data={data.LEFT_TURN} onAdd={() => onAdd(dir, 'LEFT_TURN')} />
-        <Lane type="FORWARD" data={data.FORWARD} onAdd={() => onAdd(dir, 'FORWARD')} />
         <Lane type="RIGHT_TURN" data={data.RIGHT_TURN} onAdd={() => onAdd(dir, 'RIGHT_TURN')} />
+        <Lane type="FORWARD" data={data.FORWARD} onAdd={() => onAdd(dir, 'FORWARD')} />
+        <Lane type="LEFT_TURN" data={data.LEFT_TURN} onAdd={() => onAdd(dir, 'LEFT_TURN')} />
+
     </div>
 );
 

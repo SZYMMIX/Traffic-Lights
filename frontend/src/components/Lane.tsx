@@ -11,7 +11,7 @@ interface Props {
 }
 
 export const Lane: React.FC<Props> = ({ type, data, direction, onAdd }) => {
-    const label = type === 'FORWARD' ? '↓' : type === 'LEFT_TURN' ? '<' : '>';
+    const label = type === 'FORWARD' ? '↓' : type === 'LEFT_TURN' ? '>' : '<';
     const [prevCount, setPrevCount] = useState(data.vehicleCount);
     const [leavingCars, setLeavingCars] = useState<number[]>([]);
 
