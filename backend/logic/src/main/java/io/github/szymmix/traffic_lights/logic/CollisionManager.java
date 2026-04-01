@@ -58,7 +58,7 @@ public class CollisionManager {
         conflicts.add(new ConflictPair(way2, way1));
     }
 
-    public Set<Lane> calculateOptimalGreenLanes(Intersection intersection, Set<Lane> currentTargetLanes) {
+    public Set<Lane> calculateOptimalGreenLights(Intersection intersection, Set<Lane> currentTargetLanes) {
         Set<Lane> selectedLanes = new HashSet<>();
         intersection.allLanes()
                 .filter(l -> !l.isEmpty())

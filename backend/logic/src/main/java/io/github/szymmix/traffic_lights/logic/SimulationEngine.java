@@ -7,7 +7,7 @@ import java.util.*;
 public final class SimulationEngine {
     private static final int MIN_GREEN_TIME = 5;
 
-    private int stepsSinceLastChange = 0;
+    private int stepsSinceLastChange = MIN_GREEN_TIME;
 
 
     private final Intersection intersection;
@@ -24,11 +24,11 @@ public final class SimulationEngine {
     }
 
     public List<String> step() {
-        stepsSinceLastChange++;
-
         if (shouldPhaseChange() && intersection.changePhase(collisionManager)) {
             stepsSinceLastChange = 0;
         }
+
+        stepsSinceLastChange++;
 
         return intersection.allLanes()
                 .filter(lane -> lane.getLight() == LightState.GREEN)
