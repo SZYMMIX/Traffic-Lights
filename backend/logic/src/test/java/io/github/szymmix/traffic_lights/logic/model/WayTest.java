@@ -69,9 +69,9 @@ class WayTest {
 
     @Test
     void constructorShouldThrowExceptionForAdjacentInvalidRoads() {
-       assertThrows(IllegalArgumentException.class, () -> {
+        assertThrows(IllegalArgumentException.class, () -> {
             new Way(RoadDirection.NORTH, RoadDirection.NORTH);
-       });
+        });
     }
 
     @Test
@@ -102,6 +102,52 @@ class WayTest {
         assertEquals(WayType.FORWARD, southNorth.type());
         assertEquals(WayType.FORWARD, eastWest.type());
         assertEquals(WayType.FORWARD, westEast.type());
+    }
+
+    @Test
+    void startRoadShouldReturnCorrectValue() {
+        Way way = new Way(RoadDirection.EAST, WayType.LEFT_TURN);
+
+        assertEquals(RoadDirection.EAST, way.startRoad());
+    }
+
+    @Test
+    void endRoadShouldReturnCorrectValue() {
+        Way way = new Way(RoadDirection.EAST, WayType.LEFT_TURN);
+
+        assertEquals(RoadDirection.SOUTH, way.endRoad());
+    }
+
+    @Test
+    void typeShouldReturnCorrectValue() {
+        Way way = new Way(RoadDirection.WEST, WayType.RIGHT_TURN);
+
+        assertEquals(WayType.RIGHT_TURN, way.type());
+    }
+
+    @Test
+    void wayRecordShouldBeImmutable() {
+        Way way1 = new Way(RoadDirection.NORTH, RoadDirection.SOUTH);
+        Way way2 = new Way(RoadDirection.NORTH, RoadDirection.SOUTH);
+
+        assertEquals(way1, way2);
+    }
+
+    @Test
+    void twoWaysWithSameParametersShouldBeEqual() {
+        Way way1 = new Way(RoadDirection.NORTH, WayType.LEFT_TURN);
+        Way way2 = new Way(RoadDirection.NORTH, WayType.LEFT_TURN);
+
+        assertEquals(way1, way2);
+        assertEquals(way1.hashCode(), way2.hashCode());
+    }
+
+    @Test
+    void twoWaysWithDifferentParametersShouldNotBeEqual() {
+        Way way1 = new Way(RoadDirection.NORTH, WayType.LEFT_TURN);
+        Way way2 = new Way(RoadDirection.NORTH, WayType.RIGHT_TURN);
+
+        assertNotEquals(way1, way2);
     }
 
     @Test

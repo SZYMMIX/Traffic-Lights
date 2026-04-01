@@ -1,121 +1,101 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+import { Lane } from './components/Lane';
+import type { RoadDirection, WayType, LightState, LaneSnapshot, IntersectionSnapshot } from './types';
+import { pageStyle, sidebar, viewPort, grid, centerSquare, mainBtn, resetBtn, sidebarTitle, roadSectionWrapper } from './styles/appStyles';
 
-function App() {
-  const [count, setCount] = useState(0)
+const API_BASE = "http://localhost:8080/api/simulation";
 
-  return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
+const App: React.FC = () => {
+    const [state, setState] = useState<IntersectionSnapshot | null>(null);
+    const [vId, setVId] = useState(1);
+
+    const fetchState = async () => {
+        try {
+            const res = await axios.get(`${API_BASE}/state`);
+            setState(res.data);
+        } catch (err) { console.error(err); }
+    };
+
+    const handleAdd = async (start: RoadDirection, type: WayType) => {
+        const targets: Record<RoadDirection, Record<WayType, RoadDirection>> = {
+            NORTH: { FORWARD: 'SOUTH', LEFT_TURN: 'EAST', RIGHT_TURN: 'WEST' },
+            SOUTH: { FORWARD: 'NORTH', LEFT_TURN: 'WEST', RIGHT_TURN: 'EAST' },
+            EAST: { FORWARD: 'WEST', LEFT_TURN: 'SOUTH', RIGHT_TURN: 'NORTH' },
+            WEST: { FORWARD: 'EAST', LEFT_TURN: 'NORTH', RIGHT_TURN: 'SOUTH' }
+        };
+        await axios.post(`${API_BASE}/add-vehicle`, { id: `v${vId}`, start, end: targets[start][type] });
+        setVId(vId + 1);
+        fetchState();
+    };
+
+    const doStep = async () => {
+        try {
+            const res = await axios.post(`${API_BASE}/step`);
+            setState(res.data.state);
+        } catch (err) {
+            console.error('Step failed:', err);
+        }
+    };
+
+    const handleReset = async () => {
+        try {
+            const res = await axios.post(`${API_BASE}/reset`);
+            setState(res.data);
+            setVId(1);
+        } catch (err) {
+            console.error('Reset failed:', err);
+        }
+    };
+
+    useEffect(() => { fetchState(); }, []);
+
+    if (!state) return <div style={{ padding: '50px' }}>Loading...</div>;
+
+    return (
+        <div style={pageStyle}>
+            <div style={sidebar}>
+                <h2 style={sidebarTitle}>Traffic Simulation</h2>
+                <button onClick={doStep} style={mainBtn}>NEXT STEP</button>
+                <button onClick={handleReset} style={resetBtn}>Reset</button>
+            </div>
+
+            <div style={viewPort}>
+                <div style={grid}>
+                    <div style={{ ...roadSectionWrapper, gridArea: 'N', justifyContent: 'center', marginBottom: '60px' }}>
+                        <div style={{ transform: 'rotate(0deg)' }}>
+                            <RoadSection dir="NORTH" data={state.lanes.NORTH} onAdd={handleAdd} />
+                        </div>
+                    </div>
+                    <div style={{ ...roadSectionWrapper, gridArea: 'W', justifyContent: 'flex-end', marginRight: '60px' }}>
+                        <div style={{ transform: 'rotate(-90deg)' }}>
+                            <RoadSection dir="WEST" data={state.lanes.WEST} onAdd={handleAdd} />
+                        </div>
+                    </div>
+                    <div style={centerSquare}>
+                    </div>
+                    <div style={{ ...roadSectionWrapper, gridArea: 'E', justifyContent: 'flex-start', marginLeft: '60px' }}>
+                        <div style={{ transform: 'rotate(90deg)' }}>
+                            <RoadSection dir="EAST" data={state.lanes.EAST} onAdd={handleAdd} />
+                        </div>
+                    </div>
+                    <div style={{ ...roadSectionWrapper, gridArea: 'S', justifyContent: 'center', marginTop: '60px' }}>
+                        <div style={{ transform: 'rotate(180deg)' }}>
+                            <RoadSection dir="SOUTH" data={state.lanes.SOUTH} onAdd={handleAdd} />
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    );
+};
 
-      <div className="ticks"></div>
+const RoadSection = ({ dir, data, onAdd }: any) => (
+    <div style={{ display: 'flex', gap: '2px', background: '#1a1a1a', padding: '6px', borderRadius: '6px', boxShadow: '0 2px 8px rgba(0,0,0,0.2)' }}>
+        <Lane type="LEFT_TURN" data={data.LEFT_TURN} onAdd={() => onAdd(dir, 'LEFT_TURN')} />
+        <Lane type="FORWARD" data={data.FORWARD} onAdd={() => onAdd(dir, 'FORWARD')} />
+        <Lane type="RIGHT_TURN" data={data.RIGHT_TURN} onAdd={() => onAdd(dir, 'RIGHT_TURN')} />
+    </div>
+);
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
-
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
-}
-
-export default App
+export default App;
