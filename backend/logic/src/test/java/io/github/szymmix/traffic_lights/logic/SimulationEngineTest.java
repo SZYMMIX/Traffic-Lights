@@ -106,7 +106,7 @@ class SimulationEngineTest {
         engine.step();
 
         List<String> left = engine.step();
-        assertTrue(left.isEmpty());
+        assertEquals(List.of("north-left"), left);
     }
 
     @Test
@@ -115,7 +115,7 @@ class SimulationEngineTest {
         engine.step();
 
         List<String> left = engine.step();
-        assertTrue(left.isEmpty());
+        assertEquals(List.of("north-right"), left);
     }
 
     @Test
@@ -126,7 +126,7 @@ class SimulationEngineTest {
         engine.step();
         List<String> left = engine.step();
 
-        assertTrue(left.contains("leaving-car"));
+        assertEquals(List.of("leaving-car"), left);
     }
 
     @Test
@@ -140,6 +140,6 @@ class SimulationEngineTest {
         engine.step();
 
         List<String> left = engine.step();
-        assertTrue(left.contains("car-0"));
+        assertEquals(List.of("car-1"), left);
     }
 }
