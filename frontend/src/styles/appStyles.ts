@@ -2,7 +2,7 @@ import React from 'react';
 
 export const pageStyle: React.CSSProperties = {
     display: 'flex',
-    height: '100vh',
+    height: '110vh',
     background: '#ffffff',
     fontFamily: 'Inter, system-ui, sans-serif'
 };
@@ -34,7 +34,9 @@ export const grid: React.CSSProperties = {
     gridTemplateRows: '280px 200px 280px',
     alignItems: 'center',
     justifyItems: 'center',
-    gap: '20px'
+    gap: '20px',
+    marginTop: '-60px',
+    scale: 0.75
 };
 
 export const centerSquare: React.CSSProperties = {

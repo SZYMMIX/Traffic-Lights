@@ -18,7 +18,7 @@ export const headerStyle: React.CSSProperties = {
 };
 
 export const labelStyle: React.CSSProperties = {
-    fontSize: '16px',
+    fontSize: '19px',
     fontWeight: 'bold',
     color: '#fff',
     background: '#333',
@@ -59,7 +59,7 @@ export const addBtn: React.CSSProperties = {
     borderRadius: '6px',
     padding: '8px 12px',
     fontWeight: 'bold',
-    fontSize: '14px',
+    fontSize: '18px',
     transition: 'all 0.2s',
     boxShadow: '0 2px 4px rgba(68,108,227,0.3)'
 };

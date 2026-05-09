@@ -26,7 +26,7 @@ const App: React.FC = () => {
         };
         await axios.post(`${API_BASE}/add-vehicle`, { id: `v${vId}`, start, end: targets[start][type] });
         setVId(vId + 1);
-        fetchState();
+        await fetchState();
     };
 
     const doStep = async () => {
